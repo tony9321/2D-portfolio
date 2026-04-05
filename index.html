@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Tony Chen | 2D Portfolio</title>
   </head>
   <body>
     <style>
       @font-face{
         font-family: monogram;
-        /*src: url("monogram.ttf");*/
-        src: url("/2D-portfolio/public/monogram.ttf");
+        src: url("monogram.ttf");
       }
       body{
         font-family: monogram, monospace;
@@ -40,7 +39,7 @@
         word-spacing: 0.2rem;
         filter: drop-shadow(0 0 0.75rem rgb(112, 112, 112, 112));
       }
-      ui.text{
+      .ui-text{
         margin: 0;
         user-select: none;
       }
@@ -79,7 +78,6 @@
       </div>
       <canvas id="game"></canvas>
     </div>
-    <script type="module" src="src/main.js"></script> 
-    <!-- <script type="module" src="/2D-portfolio/src/main.js"></script> -->
+    <script type="module" src="src/main.js"></script>
   </body>
 </html>
