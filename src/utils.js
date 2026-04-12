@@ -1,6 +1,50 @@
+const ALLOWED_TAGS = new Set(["A", "B", "I", "EM", "STRONG", "BR", "P", "SPAN"]);
+const ALLOWED_ATTRS = new Set(["href", "target", "rel"]);
+
+function sanitizeNode(node) {
+  if (node.nodeType === Node.TEXT_NODE) return node;
+  if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+  if (!ALLOWED_TAGS.has(node.tagName)) {
+    return document.createTextNode(node.textContent ?? "");
+  }
+
+  for (const attr of [...node.attributes]) {
+    if (!ALLOWED_ATTRS.has(attr.name)) {
+      node.removeAttribute(attr.name);
+    }
+  }
+
+  if (node.tagName === "A" && node.hasAttribute("href")) {
+    const href = node.getAttribute("href");
+    if (!href.startsWith("https://") && !href.startsWith("http://")) {
+      node.removeAttribute("href");
+    }
+    node.setAttribute("rel", "noopener noreferrer");
+  }
+
+  for (const child of [...node.childNodes]) {
+    const sanitized = sanitizeNode(child);
+    if (sanitized !== child) {
+      if (sanitized) node.replaceChild(sanitized, child);
+      else node.removeChild(child);
+    }
+  }
+
+  return node;
+}
+
 function buildTypedContent(html) {
   const template = document.createElement("template");
   template.innerHTML = html;
+
+  for (const child of [...template.content.childNodes]) {
+    const sanitized = sanitizeNode(child);
+    if (sanitized !== child) {
+      if (sanitized) template.content.replaceChild(sanitized, child);
+      else template.content.removeChild(child);
+    }
+  }
 
   const textNodes = [];
 

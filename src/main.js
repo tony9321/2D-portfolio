@@ -26,7 +26,17 @@ k.loadSprite("map", assetPath("map.png"));
 k.setBackground(k.Color.fromHex("#311047"));
 
 k.scene("main", async () => {
-  const mapData = await (await fetch(assetPath("map.json"))).json();
+  let mapData;
+  try {
+    const response = await fetch(assetPath("map.json"));
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    mapData = await response.json();
+  } catch (err) {
+    document.getElementById("dialogue").textContent =
+      "Failed to load the map. Please refresh the page.";
+    document.getElementById("textbox-container").style.display = "block";
+    return;
+  }
   const layers = mapData.layers;
 
   const map = k.add([k.sprite("map"), k.pos(0), k.scale(scaleFactor)]);
@@ -171,8 +181,8 @@ k.scene("main", async () => {
     ];
 
     let nbOfKeyPressed = 0;
-    for (const key of keyMap) {
-      if (key) {
+    for (const pressed of keyMap) {
+      if (pressed) {
         nbOfKeyPressed++;
       }
     }
